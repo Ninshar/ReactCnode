@@ -72,3 +72,52 @@
   padding: 10px;
   background-color:#fff;
 }
+
+.review-item{
+  margin-top:20px;
+  flex: 1;
+}
+.review-item .title{
+  padding:10px;
+  background-color: #f6f6f6;
+}
+.review-list{
+  background-color: #fff;
+  padding: 10px;
+  display: flex;
+  margin-bottom:1px;
+}
+.review-box{
+  flex: 1;
+}
+.header-img{
+  width:30px;
+  height:30px;
+  margin-right:10px;
+}
+.review-box-top{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.review-box-information{
+  display: flex;
+  align-items: center;
+}
+.review-box-information a{
+  margin:0 4px;
+  color: #08c;
+  text-decoration: none;
+}
+.review-box-information p.author{
+  padding:2px;
+  color: #fff;
+  background-color: #6ba44e;
+  font-size: 12px;
+}
+.review-box-fun{
+
+}
+.review-box-fun span.like{
+  
+}

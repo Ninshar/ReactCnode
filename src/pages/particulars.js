@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import HeaderNav from '../component/header-nav'
+import ReviewItem from '../component/review-item'
 import './particulars.css';
 import { backTabText } from '../utils/Utils'
 
@@ -11,7 +12,8 @@ class Particulars extends Component {
       datas:{
         author:{
           avatar_url:''
-        }
+        },
+        replies:[]
       }
     }
   }
@@ -60,6 +62,7 @@ class Particulars extends Component {
                 </div>
               </div>
               <div className="particulars-vessel" dangerouslySetInnerHTML={{__html:datas.content}}></div>
+              <ReviewItem items={datas} />
             </div>
           </div>
           <div className="particulars-right">
