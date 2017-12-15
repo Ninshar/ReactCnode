@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
-import axios from 'axios'
+import instance from '../utils/axios'
 import HeaderNav from '../component/header-nav'
 import HomeList from '../component/home-list'
 import './App.css';
 import { Link } from 'react-router-dom';
+import { parseQueryString } from '../utils/Utils'
 
 class App extends Component {
   constructor(){
@@ -22,17 +22,15 @@ class App extends Component {
     }
   }
   componentDidMount(){
-    this.ajaxHomeList(this.parseQueryString(this.props.location.search));
-    // console.log(this.parseQueryString(this.props.location.search))
+    this.ajaxHomeList(parseQueryString(this.props.location.search));
+
     this.setState({
       selectTabIndex:this.getUrlIndex()
     })
-    
   }
-  componentWillMount(){
-  }
-  getUrlIndex(){//暂停
-    let urlobj = this.parseQueryString(this.props.location.search);
+  componentWillMount(){}
+  getUrlIndex(){//获取当前tab类型，返回索引
+    let urlobj = parseQueryString(this.props.location.search);
     let thisIndex=0;
     for(let i=0; i<this.state.tabli.length; i++){
       if(this.state.tabli[i].tabLab === urlobj.tab){
@@ -41,51 +39,22 @@ class App extends Component {
     }
     return thisIndex;
   }
-  parseQueryString(url) {
-    url = url == null ? window.location.href : url
-    var search = url.substring(url.lastIndexOf('?') + 1)
-    if (!search) {
-        return {}
-    }
-    return JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
-  }
   ajaxHomeList(parame){
     let self = this;
-    axios.get('https://cnodejs.org/api/v1/topics',{params:parame})
+    instance.get('/api/v1/topics',{params:parame})
     .then(function (response) {
       self.state.listData=[];
       self.setState({
         listData:response.data.data
       })
-      console.log(response);
     })
     .catch(function (error) {
       console.log(error);
     });
   }
+  // 切换首页TAB文章类型
   onSelectTab({item,index}){
-    switch(item.title){
-      case '全部':
-        this.ajaxHomeList();
-        break;
-      case '精华':
-        this.ajaxHomeList({tab:'good'})
-        break;
-      case '分享':
-        this.ajaxHomeList({tab:'share'})    
-      break;
-      case '问答':
-        this.ajaxHomeList({tab:'ask'}) 
-        break;
-      case '招聘':
-        this.ajaxHomeList({tab:'job'}) 
-        break;
-      case '客户端测试':
-        this.ajaxHomeList() 
-        break;
-      default:
-        console.log(item);
-    }
+    this.ajaxHomeList({tab:item.tabLab})
     this.setState({
       selectTabIndex:index
     })
