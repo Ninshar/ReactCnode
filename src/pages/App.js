@@ -16,7 +16,7 @@ class App extends Component {
         {title:'分享',tabLab:'share'},
         {title:'问答',tabLab:'ask'},
         {title:'招聘',tabLab:'job'},
-        {title:'客户端测试',tabLab:''}],
+        {title:'客户端测试',tabLab:'all'}],
       listData:[],
       selectTabIndex:0,
     }
@@ -32,7 +32,7 @@ class App extends Component {
   componentWillMount(){
   }
   getUrlIndex(){//暂停
-    let urlobj = this.parseQueryString(this.props.location.search).tab;
+    let urlobj = this.parseQueryString(this.props.location.search);
     let thisIndex=0;
     for(let i=0; i<this.state.tabli.length; i++){
       if(this.state.tabli[i].tabLab === urlobj.tab){
@@ -79,6 +79,9 @@ class App extends Component {
         break;
       case '招聘':
         this.ajaxHomeList({tab:'job'}) 
+        break;
+      case '客户端测试':
+        this.ajaxHomeList() 
         break;
       default:
         console.log(item);
