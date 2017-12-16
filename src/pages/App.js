@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import instance from '../utils/axios'
-import HeaderNav from '../component/header-nav'
 import HomeList from '../component/home-list'
+import UserNew from '../component/user-new'
+
 import './App.css';
 import { Link } from 'react-router-dom';
 import { parseQueryString } from '../utils/Utils'
@@ -19,11 +20,12 @@ class App extends Component {
         {title:'客户端测试',tabLab:'all'}],
       listData:[],
       selectTabIndex:0,
+      userData:{}
     }
   }
   componentDidMount(){
     this.ajaxHomeList(parseQueryString(this.props.location.search));
-
+    this.getUserNew();
     this.setState({
       selectTabIndex:this.getUrlIndex()
     })
@@ -60,23 +62,35 @@ class App extends Component {
     })
     console.log(item)
   }
+  getUserNew(){
+    let self = this;
+    instance.post('/api/v1/accesstoken',{accesstoken:localStorage.userAccesstoken}).then(function(res){
+      console.log(res)
+      if(res.data.success){
+        console.log(res)
+        self.setState({userData:res.data})
+      }
+    })
+  }
   render() {
     let {tabli, selectTabIndex, listData} = this.state;
     return (
-      <div className="App">
-        <HeaderNav />
-        <div className="home-box">
-          <ul className="home-box-tab">
-            {
-              tabli.map((item,index)=> 
-                <li onClick={this.onSelectTab.bind(this,{item,index})} className={index===selectTabIndex?'cur':''} key={index}>
-                  <Link to={{search: `?tab=${item.tabLab}`}} >{item.title}</Link>
-                </li>)
-            }
-          </ul>
-          <HomeList Listdata={listData} />
+        <div className="main">
+          <div className="main-left">
+            <div className="main-title">  
+              <ul className="home-box-tab">
+                {
+                  tabli.map((item,index)=> 
+                    <li onClick={this.onSelectTab.bind(this,{item,index})} className={index===selectTabIndex?'cur':''} key={index}>
+                      <Link to={{search: `?tab=${item.tabLab}`}} >{item.title}</Link>
+                    </li>)
+                }
+              </ul>
+            </div>
+            <HomeList Listdata={listData} />
+          </div>
+          <UserNew userData={this.state.userData} />
         </div>
-      </div>
     );
   }
 }

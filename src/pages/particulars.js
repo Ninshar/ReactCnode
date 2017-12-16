@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import HeaderNav from '../component/header-nav'
 import ReviewItem from '../component/review-item'
+import UserNew from '../component/user-new'
 import './particulars.css';
-import { backTabText } from '../utils/Utils'
+import { formatPassTime, backTabText } from '../utils/Utils'
 
 class Particulars extends Component {
   constructor(){
@@ -43,19 +43,17 @@ class Particulars extends Component {
     let {datas} = this.state;
     
     return (
-      <div className="App">
-        <HeaderNav />
-        <div className="particulars">
-          <div className="particulars-left">
+        <div className="main">
+          <div className="main-left">
             <div className="particulars-con">
               <div className="particulars-con-header">
                 <p>{datas.top|| datas.good?<span>{backTabText(null,datas.top, datas.good)}</span>:""} {datas.title}</p>
                 <div className="particulars-con-information">
                   <div className="particulars-con-text">
-                    <span> 发布于 {datas.create_at} 天前 </span> 
+                    <span> 发布于 {formatPassTime(datas.create_at)} </span> 
                     <span> 作者 {datas.author.loginname} </span>  
                     <span> {datas.visit_count} 次浏览 </span>
-                    <span> 最后一次编辑是 {datas.last_reply_at} 天前 </span>
+                    <span> 最后一次编辑是 {formatPassTime(datas.last_reply_at)} </span>
                     <span> 来自 {backTabText(datas.tab)} </span>
                   </div>
                   <div className="particulars-collect-but">收藏</div>
@@ -65,19 +63,8 @@ class Particulars extends Component {
               <ReviewItem items={datas} />
             </div>
           </div>
-          <div className="particulars-right">
-            <p className="title">作者</p>
-            <div className="author">
-              <div className="author-information">
-                <img src={datas.author.avatar_url} alt="" />
-                <span>{datas.author.loginname}</span>
-              </div>
-              {/* <span>积分: 3360 </span>
-              <p>“ 追求卓越，成功就会在不经意间追上你。” </p> */}
-            </div>
-          </div>
+          <UserNew tabState={1} userData={datas.author} />
         </div>
-      </div>
     );
   }
 }

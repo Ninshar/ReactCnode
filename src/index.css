@@ -12,6 +12,7 @@ body{
   font-family:"Helvetica Neue","Luxi Sans","DejaVu Sans",Tahoma,"Hiragino Sans GB",STHeiti,sans-serif!important;
 }
 ul{
+  padding: 0;
   list-style: none;
   margin: 0;
 }
@@ -31,4 +32,28 @@ input{
 }
 p{
   margin: 0;
+}
+.main-title{
+  background-color: #f6f6f6;
+  padding: 10px;
+  border-radius: 3px 3px 0 0;
+}
+.main-left{
+  margin-right:15px;
+  flex: 1;
+}
+.introduce-box{
+  padding: 10px;
+  background-color: #fff;
+}
+.login-buttom{
+  display: block;
+  margin-top: 20px;
+  width: 100px;
+  height: 40px;
+  background-color:#5bc0de;
+  line-height:40px;
+  text-align: center;
+  border-radius: 4px;
+  color: #fff;
 }

@@ -1,18 +1,14 @@
-.particulars{
+.main{
   margin:20px auto;
-  width: 1400px;
+  width: 90%;
+  max-width: 1400px;
+  min-width:900px;
   display: flex;
 
   justify-content: space-between;
 }
-.particulars-left{
-  width: 1095px;
-  margin-right:15px;
-  /* background-color: #ffffff; */
-}
 .particulars-right{
   width: 290px;
-  /* background-color: #ffffff; */
 }
 .particulars-right .title{
   background-color: #f6f6f6;
@@ -76,10 +72,6 @@
 .review-item{
   margin-top:20px;
   flex: 1;
-}
-.review-item .title{
-  padding:10px;
-  background-color: #f6f6f6;
 }
 .review-list{
   background-color: #fff;

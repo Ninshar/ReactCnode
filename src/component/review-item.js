@@ -10,7 +10,7 @@ const Reviewitem = ({items}) =>{
      {
       items.replies.map((item,index)=>{
          return(
-          <div key={items.id} className="review-list">
+          <div key={item.id} className="review-list">
             <img className="header-img" src={item.author.avatar_url} alt="" />
             <div className="review-box">
               <div className="review-box-top"> 

@@ -55,3 +55,15 @@ export const backTabText = (tab, top ,good) => {
       console.log('类型未定义：'+tab)
   }
 }
+/*
+*
+*判断是否有accessToken
+*
+*/
+export function isUser(){
+  if(localStorage.userAccesstoken){
+    return true;
+  }else{
+    return false;
+  }
+}
