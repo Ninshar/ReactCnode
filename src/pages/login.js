@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import instance from '../utils/axios'
-import UserNew from '../component/user-new'
+// import UserNew from '../component/user-new'
 import {Redirect} from 'react-router-dom'
 import './App.css';
 

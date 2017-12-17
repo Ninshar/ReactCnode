@@ -17,7 +17,7 @@ class App extends Component {
         {title:'分享',tabLab:'share'},
         {title:'问答',tabLab:'ask'},
         {title:'招聘',tabLab:'job'},
-        {title:'客户端测试',tabLab:'all'}],
+        {title:'客户端测试',tabLab:'dev'}],
       listData:[],
       selectTabIndex:0,
       userData:{}
@@ -60,14 +60,14 @@ class App extends Component {
     this.setState({
       selectTabIndex:index
     })
-    console.log(item)
+    // console.log(item)
   }
   getUserNew(){
     let self = this;
     instance.post('/api/v1/accesstoken',{accesstoken:localStorage.userAccesstoken}).then(function(res){
-      console.log(res)
+      // console.log(res)
       if(res.data.success){
-        console.log(res)
+        // console.log(res)
         self.setState({userData:res.data})
       }
     })

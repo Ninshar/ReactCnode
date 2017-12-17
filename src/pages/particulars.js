@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios'
+import instance from '../utils/axios'
+
 import ReviewItem from '../component/review-item'
 import UserNew from '../component/user-new'
 import './particulars.css';
@@ -19,25 +20,76 @@ class Particulars extends Component {
   }
   componentDidMount(){
     let id = this.props.match.params.id;
-    // alert(1)
     this.ajaxParticulars(id);
   }
   componentWillMount(){
-  //   alert(2)
   }
-  ajaxParticulars(id,parame){
-     let self = this;
-    axios.get(`https://cnodejs.org/api/v1/topic/${id}`,{params:parame})
-    .then(function (response) {
-      // self.state.listData=[];
-      self.setState({
-        datas: response.data.data
-      })
-      console.log(self.state.datas);
+  async ajaxParticulars(id){
+    // 获取用户信息
+    let user = await instance.post('/api/v1/accesstoken',{accesstoken:localStorage.userAccesstoken});
+    // 获取用户收藏列表
+    let backdata = await instance.get(`/api/v1/topic_collect/${user.data.loginname}`);
+    // 获取当期页面数据
+    let {data} = await instance.get(`/api/v1/topic/${id}`)
+    //判断当前用户是否点赞过评论
+    this.isUps(data.data.replies,user.data);
+    // 判断是否收藏，返回数据   
+    this.isCollect(backdata,data);
+    //赋值当前页面数据  
+    this.setState({
+      datas:data.data
     })
-    .catch(function (error) {
-      console.log(error);
-    });
+  }
+  isCollect(backdata,data){
+    for(let i=0;i<backdata.data.data.length; i++){
+      if(backdata.data.data[i].id===data.data.id){
+        data.data.is_collect = true;
+      }
+    }
+  }
+  isUps(repliesData,userData){
+    for(let i=0;i<repliesData.length;i++){
+      if(repliesData[i].ups.indexOf(userData.id) > -1){
+        repliesData[i].is_uped = true;
+      }
+    }
+  }
+  // 收藏按钮
+  async collectBut(id,isCollect){
+    let AjaxReturnData={};
+    let pageData = this.state.datas;
+    if(isCollect){
+      AjaxReturnData = await instance.post(`/api/v1/topic_collect/de_collect`,{accesstoken:localStorage.userAccesstoken,topic_id:id});
+    }else{
+      AjaxReturnData = await instance.post(`/api/v1/topic_collect/collect`,{accesstoken:localStorage.userAccesstoken,topic_id:id});
+    }
+    if(AjaxReturnData.data.success){
+      pageData.is_collect = !pageData.is_collect;
+      this.setState({
+        datas:pageData
+      })
+    }
+  }
+  async onClickUps(reply_id){
+    let user = await instance.post(`/api/v1/reply/${reply_id}/ups`,{accesstoken:localStorage.userAccesstoken});
+    let pageDatas = this.state.datas;
+    if(user.data.success&&user.data.action==="up"){
+      this.forUps(user.data.action,pageDatas,reply_id)
+    }else if(user.data.success&&user.data.action==="down"){
+      this.forUps(user.data.action,pageDatas,reply_id)
+    }
+  }
+  forUps(action,pageDatas,reply_id){
+    let self = this;
+    for(let i=0; i<pageDatas.replies.length; i++){
+      if(pageDatas.replies[i].id===reply_id){
+        action==='up'?pageDatas.replies[i].ups.length++:pageDatas.replies[i].ups.length--
+        pageDatas.replies[i].is_uped=!pageDatas.replies[i].is_uped
+        self.setState({
+          datas:pageDatas
+        })
+      }
+    }
   }
   render() {
     let {datas} = this.state;
@@ -56,11 +108,18 @@ class Particulars extends Component {
                     <span> 最后一次编辑是 {formatPassTime(datas.last_reply_at)} </span>
                     <span> 来自 {backTabText(datas.tab)} </span>
                   </div>
-                  <div className="particulars-collect-but">收藏</div>
+                  <div onClick={this.collectBut.bind(this,datas.id,datas.is_collect)} style={{backgroundColor:datas.is_collect?'#e5e5e5':'#80bd01',color:datas.is_collect?'#333':'#fff'}} className="particulars-collect-but">{datas.is_collect?'取消收藏':'收藏'}</div>
                 </div>
               </div>
               <div className="particulars-vessel" dangerouslySetInnerHTML={{__html:datas.content}}></div>
-              <ReviewItem items={datas} />
+              <div className="review-item">
+                <p className="main-title">{datas.reply_count} 回复</p>
+                {
+                  datas.replies.map((item,index)=>
+                    <ReviewItem key={item.id} onClickUps={this.onClickUps.bind(this,item.id)} loginname={datas.author.loginname} index={index} item={item} />
+                  )
+                }
+              </div>
             </div>
           </div>
           <UserNew tabState={1} userData={datas.author} />

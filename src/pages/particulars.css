@@ -108,8 +108,10 @@
   font-size: 12px;
 }
 .review-box-fun{
-
+  display: flex;
 }
 .review-box-fun span.like{
-  
+  /* width: 20px; */
+  height: 20px;
+  background-color: #f40;
 }

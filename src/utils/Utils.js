@@ -38,7 +38,7 @@ export const parseQueryString = (url)=> {
 * {返回标签类型}
 *
 */
-export const backTabText = (tab, top ,good) => {
+export const backTabText = (tab='', top=false ,good=false) => {
   if(top){
     return '置顶'
   }else if(good){
@@ -51,8 +51,12 @@ export const backTabText = (tab, top ,good) => {
       return '问答'
     case 'job':
       return '招聘'
+    case 'dev':
+      return '测试'
     default:
-      console.log('类型未定义：'+tab)
+      // break;
+      // console.log('类型未定义：'+tab)
+      break;
   }
 }
 /*
