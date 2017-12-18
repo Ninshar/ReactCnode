@@ -24,7 +24,9 @@ class App extends Component {
     }
   }
   componentDidMount(){
-    this.ajaxHomeList(parseQueryString(this.props.location.search));
+    let pageTab = parseQueryString(this.props.location.search);
+    this.ajaxHomeList(pageTab);
+
     this.setState({
       selectTabIndex:this.getUrlIndex()
     })
@@ -41,10 +43,11 @@ class App extends Component {
     }
     return thisIndex;
   }
-  ajaxHomeList(parame){
+  ajaxHomeList(tabs){
     let self = this;
-    instance.get('/api/v1/topics',{params:parame})
+    instance.get('/api/v1/topics',{params:{...tabs,page:1}})
     .then(function (response) {
+      console.log(response)
       self.state.listData=[];
       self.setState({
         listData:response.data.data
