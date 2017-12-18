@@ -45,7 +45,7 @@ class App extends Component {
   }
   ajaxHomeList(tabs){
     let self = this;
-    instance.get('/api/v1/topics',{params:{...tabs,page:1}})
+    instance.get('/api/v1/topics',{params:{...tabs,page:1,mdrender:false}})
     .then(function (response) {
       console.log(response)
       self.state.listData=[];
