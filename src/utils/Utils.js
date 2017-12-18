@@ -21,17 +21,33 @@ export const formatPassTime = (startTime) =>{
 
 /*
 *
-* {日期转换时间}
+* {解析URL为{key:vlaue}}
 *
 */
-export const parseQueryString = (url)=> {
+export  function urlParse(url){
   url = url == null ? window.location.href : url
-  var search = url.substring(url.lastIndexOf('?') + 1)
-  if (!search) {
-      return {}
-  }
-  return JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
+      var obj = {};
+      var reg = /[?&][^?&]+=[^?&]+/g;
+      var arr = url.match(reg);
+
+      if (arr) {
+          arr.forEach(function (item) {
+              var tempArr = item.substring(1).split('=');
+              var key = decodeURIComponent(tempArr[0]);
+              var val = decodeURIComponent(tempArr[1]);
+              obj[key] = val;
+          });
+      }
+      return obj;
 }
+// export const parseQueryString = (url)=> {
+//   url = url == null ? window.location.href : url
+//   var search = url.substring(url.lastIndexOf('?') + 1)
+//   if (!search) {
+//       return {}
+//   }
+//   return JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
+// }
 
 /*
 *

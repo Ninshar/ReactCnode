@@ -5,7 +5,7 @@ import UserNew from '../component/user-new'
 
 import './App.css';
 import { Link } from 'react-router-dom';
-import { parseQueryString, isUser } from '../utils/Utils'
+import { urlParse, isUser } from '../utils/Utils'
 
 class App extends Component {
   constructor(){
@@ -24,9 +24,9 @@ class App extends Component {
     }
   }
   componentDidMount(){
-    let pageTab = parseQueryString(this.props.location.search);
+    let pageTab = urlParse(this.props.location.search);
     this.ajaxHomeList(pageTab);
-
+    console.log(pageTab)
     this.setState({
       selectTabIndex:this.getUrlIndex()
     })
@@ -34,7 +34,7 @@ class App extends Component {
   }
   componentWillMount(){}
   getUrlIndex(){//获取当前tab类型，返回索引
-    let urlobj = parseQueryString(this.props.location.search);
+    let urlobj = urlParse(this.props.location.search);
     let thisIndex=0;
     for(let i=0; i<this.state.tabli.length; i++){
       if(this.state.tabli[i].tabLab === urlobj.tab){
@@ -87,7 +87,9 @@ class App extends Component {
                     </li>)
                 }
               </ul>
+              
             </div>
+            {listData.length===0?<p className="no-topic">暂无话题</p>:''}
             <HomeList Listdata={listData} />
           </div>
           <UserNew userData={this.state.userData} />
