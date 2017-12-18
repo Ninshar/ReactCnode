@@ -4,7 +4,7 @@ import instance from '../utils/axios'
 import ReviewItem from '../component/review-item'
 import UserNew from '../component/user-new'
 import './particulars.css';
-import { formatPassTime, backTabText } from '../utils/Utils'
+import { formatPassTime, backTabText, isUser} from '../utils/Utils'
 
 class Particulars extends Component {
   constructor(){
@@ -25,16 +25,21 @@ class Particulars extends Component {
   componentWillMount(){
   }
   async ajaxParticulars(id){
-    // 获取用户信息
-    let user = await instance.post('/api/v1/accesstoken',{accesstoken:localStorage.userAccesstoken});
-    // 获取用户收藏列表
-    let backdata = await instance.get(`/api/v1/topic_collect/${user.data.loginname}`);
+    let userAccesstoken = window.sessionStorage.getItem('userAccesstoken');
+
     // 获取当期页面数据
     let {data} = await instance.get(`/api/v1/topic/${id}`)
+    if(userAccesstoken){
+      // 获取用户信息
+      let user = await instance.post('/api/v1/accesstoken',{accesstoken:userAccesstoken});
+      // 获取用户收藏列表
+      let backdata = await instance.get(`/api/v1/topic_collect/${user.data.loginname}`);
+      this.isUps(data.data.replies,user.data);
+      this.isCollect(backdata,data);
+    }
     //判断当前用户是否点赞过评论
-    this.isUps(data.data.replies,user.data);
+ 
     // 判断是否收藏，返回数据   
-    this.isCollect(backdata,data);
     //赋值当前页面数据  
     this.setState({
       datas:data.data
@@ -56,12 +61,16 @@ class Particulars extends Component {
   }
   // 收藏按钮
   async collectBut(id,isCollect){
+    if(!isUser()){
+      alert('提示：请登录')
+      return
+    }
     let AjaxReturnData={};
     let pageData = this.state.datas;
     if(isCollect){
-      AjaxReturnData = await instance.post(`/api/v1/topic_collect/de_collect`,{accesstoken:localStorage.userAccesstoken,topic_id:id});
+      AjaxReturnData = await instance.post(`/api/v1/topic_collect/de_collect`,{accesstoken:sessionStorage.userAccesstoken,topic_id:id});
     }else{
-      AjaxReturnData = await instance.post(`/api/v1/topic_collect/collect`,{accesstoken:localStorage.userAccesstoken,topic_id:id});
+      AjaxReturnData = await instance.post(`/api/v1/topic_collect/collect`,{accesstoken:sessionStorage.userAccesstoken,topic_id:id});
     }
     if(AjaxReturnData.data.success){
       pageData.is_collect = !pageData.is_collect;
@@ -71,7 +80,11 @@ class Particulars extends Component {
     }
   }
   async onClickUps(reply_id){
-    let user = await instance.post(`/api/v1/reply/${reply_id}/ups`,{accesstoken:localStorage.userAccesstoken});
+    if(!isUser()){
+      alert('提示：请登录')
+      return
+    }
+    let user = await instance.post(`/api/v1/reply/${reply_id}/ups`,{accesstoken:sessionStorage.userAccesstoken});
     let pageDatas = this.state.datas;
     if(user.data.success&&user.data.action==="up"){
       this.forUps(user.data.action,pageDatas,reply_id)

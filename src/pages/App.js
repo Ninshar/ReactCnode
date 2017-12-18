@@ -5,7 +5,7 @@ import UserNew from '../component/user-new'
 
 import './App.css';
 import { Link } from 'react-router-dom';
-import { parseQueryString } from '../utils/Utils'
+import { parseQueryString, isUser } from '../utils/Utils'
 
 class App extends Component {
   constructor(){
@@ -25,10 +25,10 @@ class App extends Component {
   }
   componentDidMount(){
     this.ajaxHomeList(parseQueryString(this.props.location.search));
-    this.getUserNew();
     this.setState({
       selectTabIndex:this.getUrlIndex()
     })
+    this.getUserNew();
   }
   componentWillMount(){}
   getUrlIndex(){//获取当前tab类型，返回索引
@@ -60,17 +60,15 @@ class App extends Component {
     this.setState({
       selectTabIndex:index
     })
-    // console.log(item)
   }
-  getUserNew(){
-    let self = this;
-    instance.post('/api/v1/accesstoken',{accesstoken:localStorage.userAccesstoken}).then(function(res){
-      // console.log(res)
-      if(res.data.success){
-        // console.log(res)
-        self.setState({userData:res.data})
+  async getUserNew(){
+    let userAccesstoken = window.sessionStorage.getItem('userAccesstoken');
+    if(isUser()){
+      let loginData = await instance.post('/api/v1/accesstoken',{accesstoken:userAccesstoken});
+      if(loginData.data.success){
+        this.setState({userData:loginData.data})
       }
-    })
+    }
   }
   render() {
     let {tabli, selectTabIndex, listData} = this.state;

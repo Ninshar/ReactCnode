@@ -19,9 +19,9 @@ class Login extends Component {
     let inputAccessToken = this.textInput.value;
     let self = this;
     instance.post('/api/v1/accesstoken',{accesstoken:inputAccessToken}).then(function(res){
-      console.log(res)
+      // console.log(res)
       if(res.data.success){
-        localStorage.userAccesstoken= inputAccessToken;
+        window.sessionStorage.setItem('userAccesstoken', inputAccessToken);
         self.setState({
           isLogin:true
         })

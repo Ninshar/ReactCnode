@@ -9,7 +9,7 @@ const headerNav = () =>{
   function isOutLogin(){
     
     if(isUser()){
-      localStorage.userAccesstoken= '';
+      sessionStorage.userAccesstoken= '';
     }
   }
   return(

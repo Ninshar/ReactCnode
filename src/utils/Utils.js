@@ -65,7 +65,7 @@ export const backTabText = (tab='', top=false ,good=false) => {
 *
 */
 export function isUser(){
-  if(localStorage.userAccesstoken){
+  if(window.sessionStorage.getItem('userAccesstoken')){
     return true;
   }else{
     return false;
